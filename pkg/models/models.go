@@ -2,19 +2,19 @@ package models
 
 import (
 	"jwt-app/pkg/database"
-
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Init() *mongo.Client {
+func Init() {
 	database.Connect()
-	client := database.GetClient()
-	return client
-
 }
 
 type User struct {
 	Name     string `json:"Name"`
+	Username string `json:"Username"`
+}
+
+type MongoDetails struct {
 	Email    string `json:"Email"`
+	Name     string `json:"Name"`
 	Username string `json:"Username"`
 }

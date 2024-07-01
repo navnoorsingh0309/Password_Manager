@@ -15,14 +15,14 @@ func init() {
 }
 
 func main() {
+	// Connecting to MongoDB
+	models.Init()
+
 	// Setting up a new router for our routes to api
 	mux := mux.NewRouter()
 	// Registering routes
 	routes.RegisterUserRotues(mux)
 	http.Handle("/", mux)
-
-	// Connecting to MongoDB
-	models.Init()
 
 	// Starting server
 	fmt.Println("Starting server at port 8000")

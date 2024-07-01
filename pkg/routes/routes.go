@@ -7,5 +7,6 @@ import (
 )
 
 var RegisterUserRotues = func(r *mux.Router) {
+	r.HandleFunc("/countUsers", controllers.CountUsers).Methods("GET")
 	r.HandleFunc("/getUsers", controllers.GetUsers).Methods("GET")
 }
