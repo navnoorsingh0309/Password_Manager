@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"jwt-app/pkg/initializers"
-	"jwt-app/pkg/models"
 	"jwt-app/pkg/routes"
 	"net/http"
 
@@ -15,8 +14,6 @@ func init() {
 }
 
 func main() {
-	// Connecting to MongoDB
-	models.Init()
 
 	// Setting up a new router for our routes to api
 	mux := mux.NewRouter()
