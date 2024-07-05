@@ -2,15 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
-	"jwt-app/pkg/models"
 	"net/http"
 )
 
-var currentUser models.User
-
 func WriteJson(w http.ResponseWriter, status int, v any) error {
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(status)
-	w.Header().Set("Content-Type", "application/json")
 	return json.NewEncoder(w).Encode(v)
 }
 
