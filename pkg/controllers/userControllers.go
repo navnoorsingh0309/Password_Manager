@@ -6,6 +6,7 @@ import (
 	"jwt-app/pkg/models"
 	"log"
 	"net/http"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -43,7 +44,17 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		WriteJson(w, models.APIError{Error: err.Error()})
 	}
 
-	WriteJson(w, models.JWTToken{Token: jwt_token})
+	// Will store token in cookie
+	cookie := http.Cookie{
+		Name:     "jwt",
+		Value:    jwt_token,
+		MaxAge:   int(time.Now().Add(time.Minute * 30).Unix()),
+		HttpOnly: true,
+	}
+	// Setting Cookie
+	http.SetCookie(w, &cookie)
+
+	WriteJson(w, models.Message{Message: "success"})
 
 }
 
@@ -60,6 +71,7 @@ func HandleSignUp(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// Setting up user
 	user, err := models.NewUser(createUserReq.Name, createUserReq.Email, encryptedPassword)
 	if err != nil {
 		log.Fatal(err)

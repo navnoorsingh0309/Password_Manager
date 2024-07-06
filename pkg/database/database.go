@@ -44,7 +44,7 @@ func CreateJWT(user *models.User) (string, error) {
 // Initializing Postgres Storage
 func NewPostgresStore() (*PostgresStore, error) {
 	// Open Postgres service
-	connStr := "user=postgres dbname=postgres password=go_jwt sslmode=disable"
+	connStr := "postgres://postgres:go_jwt@mypostgres:5432/postgres?sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err

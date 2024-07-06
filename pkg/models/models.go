@@ -28,7 +28,11 @@ type APIError struct {
 }
 
 type JWTToken struct {
-	Token string `json:"Token"`
+	Token string `json:"token"`
+}
+
+type Message struct {
+	Message string `json:"message"`
 }
 
 func NewUser(Name, Email string, Password []byte) (*User, error) {

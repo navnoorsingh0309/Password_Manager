@@ -3,17 +3,12 @@ package main
 import (
 	"fmt"
 	"jwt-app/pkg/database"
-	"jwt-app/pkg/initializers"
 	"jwt-app/pkg/routes"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
-
-func init() {
-	initializers.LoadEnvVariables()
-}
 
 func main() {
 	// Initialize Postgres
