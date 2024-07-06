@@ -2,13 +2,30 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"jwt-app/pkg/database"
 	"jwt-app/pkg/models"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var store database.PostgresStore
+
+// Creating JWT Token for user
+func CreateJWT(user *models.User) (string, error) {
+	// Claims
+	claims := &jwt.MapClaims{
+		"expiresAt": 150000,
+		"Email":     user.Email,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+
+}
 
 func SetStore(s database.PostgresStore) {
 	store = s
@@ -31,6 +48,14 @@ func HandleSignUp(w http.ResponseWriter, r *http.Request) {
 	if err := store.CreateUser(user); err != nil {
 		log.Fatal(err)
 	}
+
+	// JWT Token generation
+	tokenString, err := CreateJWT(user)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("JWT Token: ", tokenString)
 
 	// Writing json
 	w.Header().Add("Content-Type", "application/json")

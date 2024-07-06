@@ -16,6 +16,10 @@ type User struct {
 	CreatedAt time.Time `json:"createat"`
 }
 
+type APIError struct {
+	Error string `json:"error"`
+}
+
 func NewUser(Name, Email string) *User {
 	return &User{
 		Name:      Name,
