@@ -2,29 +2,26 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"jwt-app/pkg/database"
 	"jwt-app/pkg/models"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var store database.PostgresStore
 
-// Creating JWT Token for user
-func CreateJWT(user *models.User) (string, error) {
-	// Claims
-	claims := &jwt.MapClaims{
-		"expiresAt": 150000,
-		"Email":     user.Email,
+// Returning Json
+func WriteJson(w http.ResponseWriter, data any) {
+	// Writing json
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	jsonRespose, err := json.Marshal(data)
+	if err != nil {
+		log.Fatal(err)
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-
+	w.Write(jsonRespose)
 }
 
 func SetStore(s database.PostgresStore) {
@@ -32,6 +29,21 @@ func SetStore(s database.PostgresStore) {
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
+	// Login Request
+	var req models.LoginUserReq
+
+	// Get login information
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		WriteJson(w, models.APIError{Error: "Permission Denied"})
+	}
+
+	// Login to database
+	jwt_token, err := store.Loginuser(&req)
+	if err != nil {
+		WriteJson(w, models.APIError{Error: err.Error()})
+	}
+
+	WriteJson(w, models.JWTToken{Token: jwt_token})
 
 }
 
@@ -44,27 +56,23 @@ func HandleSignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Creating New User
-	user := models.NewUser(createUserReq.Name, createUserReq.Email)
-	if err := store.CreateUser(user); err != nil {
+	encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(createUserReq.Password), bcrypt.DefaultCost)
+	if err != nil {
 		log.Fatal(err)
 	}
-
-	// JWT Token generation
-	tokenString, err := CreateJWT(user)
+	user, err := models.NewUser(createUserReq.Name, createUserReq.Email, encryptedPassword)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("JWT Token: ", tokenString)
+	// Adding user to database
+	err = store.CreateUser(user)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Writing json
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	jsonRespose, err := json.Marshal(user)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w.Write(jsonRespose)
+	WriteJson(w, user)
 }
 
 func HandleNewPassword(w http.ResponseWriter, r *http.Request) {
@@ -91,12 +99,5 @@ func HandleGetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Writing json
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	jsonRespose, err := json.Marshal(users)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w.Write(jsonRespose)
-
+	WriteJson(w, users)
 }

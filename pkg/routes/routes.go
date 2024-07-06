@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"os"
 
-	jwt "github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 )
 
@@ -41,17 +41,32 @@ func ProtectedWithJWT(handleFunc http.HandlerFunc) http.HandlerFunc {
 		fmt.Println("Calling middleware")
 
 		tokenString := r.Header.Get("x-jwt-token")
-		_, err := ValidateJWTToken(tokenString)
+		token, err := ValidateJWTToken(tokenString)
 		if err != nil {
 			// Writing json
 			w.Header().Add("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			jsonRes, err := json.Marshal(models.APIError{Error: "Invalid Token"})
+			jsonRes, err := json.Marshal(models.APIError{Error: "Permission Denied"})
 			if err != nil {
 				log.Fatal(err)
 			}
 			w.Write(jsonRes)
 		}
+		// Valid token or not
+		if !token.Valid {
+			// Writing json
+			w.Header().Add("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			jsonRes, err := json.Marshal(models.APIError{Error: "Permission Denied"})
+			if err != nil {
+				log.Fatal(err)
+			}
+			w.Write(jsonRes)
+		}
+
+		claims := token.Claims.(jwt.MapClaims)
+
+		fmt.Println(claims)
 
 		handleFunc(w, r)
 	}
