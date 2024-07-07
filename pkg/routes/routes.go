@@ -15,8 +15,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var RegisterUserRotues = func(r *mux.Router, store database.PostgresStore) {
+var RegisterUserRotues = func(r *mux.Router, store database.PostgresStore, client database.MongoDBClient) {
 	controllers.SetStore(store)
+	controllers.SetMongoClient(client)
 	// Login
 	r.HandleFunc("/login", controllers.HandleLogin).Methods("POST")
 	// New User

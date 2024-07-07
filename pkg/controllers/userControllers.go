@@ -12,6 +12,7 @@ import (
 )
 
 var store database.PostgresStore
+var client database.MongoDBClient
 
 // Returning Json
 func WriteJson(w http.ResponseWriter, data any) {
@@ -27,6 +28,9 @@ func WriteJson(w http.ResponseWriter, data any) {
 
 func SetStore(s database.PostgresStore) {
 	store = s
+}
+func SetMongoClient(c database.MongoDBClient) {
+	client = c
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +82,7 @@ func HandleSignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Adding user to database
-	err = store.CreateUser(user)
+	err = store.CreateUser(user, &client)
 	if err != nil {
 		log.Fatal(err)
 	}

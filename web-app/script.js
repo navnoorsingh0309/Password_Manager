@@ -9,6 +9,7 @@ const apiLink = "https://critical-tobe-student-iitropar-6d8618df.koyeb.app"
 signUpLink.addEventListener('click', () => {
     wrapper.classList.add('signup-clicking');
     wrapper.classList.remove('signin-clicking');
+    console.log(getCoo)
 });
 
 signInLink.addEventListener('click', () => {
@@ -17,6 +18,7 @@ signInLink.addEventListener('click', () => {
 });
 
 function onSignUp() {
+    // Creating NON-CORES request to my api
     const reqOptions = {
         mode: 'no-cors',
         method: 'POST',
@@ -40,6 +42,7 @@ function onSignUp() {
 }
 
 function onSignIn() {
+    // Creating NON-CORES request to my api
     const reqOptions = {
         mode: 'no-cors',
         method: 'POST',

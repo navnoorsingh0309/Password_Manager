@@ -16,8 +16,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// Initializing MongoDB
+	mongoClient, err := database.NewMongoDB()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	fmt.Printf("Database: %+v\n", store)
+	fmt.Printf("Postgres Database: %+v\n", store)
+	fmt.Printf("Mongo Client: %+v\n", mongoClient)
 
 	// Setting up SQL Table
 	if err := store.CreateTable(); err != nil {
@@ -27,7 +33,7 @@ func main() {
 	// Setting up a new router for our routes to api
 	mux := mux.NewRouter()
 	// Registering routes
-	routes.RegisterUserRotues(mux, *store)
+	routes.RegisterUserRotues(mux, *store, *mongoClient)
 	http.Handle("/", mux)
 
 	// Starting server

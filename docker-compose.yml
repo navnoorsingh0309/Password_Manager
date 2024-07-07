@@ -15,6 +15,21 @@ services:
       - my-network
     volumes:
       - database_postgres:/var/lib/postgresql/data
+  
+  mymongo:
+    image: mongo
+    container_name: mymongo
+    hostname: mymongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=go_jwt
+      - MONGO_INIDB_DATABASE=user_passwords
+    ports:
+      - "27017:27017"
+    networks:
+      - my-network
+    volumes:
+      - database_mongo:/data/db
 
   mygo:
     build: .
@@ -24,6 +39,7 @@ services:
       - "8000:8000"
     depends_on:
       - mypostgres
+      - mymongo
     networks:
       - my-network
     restart: always
@@ -31,6 +47,7 @@ services:
 volumes:
   api:
   database_postgres:
+  database_mongo:
 
 networks:
   my-network:

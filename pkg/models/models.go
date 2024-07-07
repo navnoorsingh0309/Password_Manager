@@ -35,6 +35,12 @@ type Message struct {
 	Message string `json:"message"`
 }
 
+type PasswordModel struct {
+	ID       int    `json:"id"`
+	Entity   string `json:"entity"`
+	Password string `json:"password"`
+}
+
 func NewUser(Name, Email string, Password []byte) (*User, error) {
 	return &User{
 		Name:              Name,
