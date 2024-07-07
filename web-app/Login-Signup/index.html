@@ -9,27 +9,33 @@
   <body>
     <main class="wrapper">
       <div class="form-wrapper sign-up">
-        <form action="">
+        <form onsubmit="onSignUp()">
           <h2>Sign Up</h2>
           <div class="firstInput">
             <input
               class="Creds_input"
               type="name"
+              id="Name"
               placeholder="Your Name"
+              required
             />
           </div>
           <div class="restInputs">
             <input
               class="Creds_input"
+              id="Email"
               type="email"
               placeholder="Your Email Address"
+              required
             />
           </div>
           <div class="restInputs">
             <input
               class="Creds_input"
+              id="Password"
               type="test"
               placeholder="Password"
+              required
             />
           </div>
           <button type="submit" class="btn">Sign Up</button>
@@ -56,7 +62,9 @@
             <input class="Creds_input" type="text" placeholder="Password" />
           </div>
           <div class="forgot-pass">
-            <a href="#" style="text-decoration: none; color: black;">Forgot Password?</a>
+            <a href="#" style="text-decoration: none; color: black"
+              >Forgot Password?</a
+            >
           </div>
           <button type="submit" class="btn">Login</button>
           <div class="sign-link">
@@ -67,7 +75,6 @@
         </form>
       </div>
     </main>
-
     <script src="script.js"></script>
   </body>
 </html>
