@@ -27,18 +27,22 @@ function onSignUp(e) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            name: document.getElementById('Name').value,
-            email: document.getElementById('Email').value,
-            password: document.getElementById('Password').value,
+            "name": document.getElementById('Name_Signup').value,
+            "email": document.getElementById('Email').value,
+            "password": document.getElementById('Password').value,
         })
     }
     fetch(apiLink + '/signup', reqOptions)
     .then(response => response.json())
     .then((data)=> {
-        alert("Account Created Successfully!!");
-        document.getElementById('Name').innerHTML = "";
-        document.getElementById('Email').innerHTML = "";
-        document.getElementById('Password').innerHTML = "";
+        if (data.message !== "Error") {
+            alert("Account Created Successfully!!");
+            document.getElementById('Name').innerHTML = "";
+            document.getElementById('Email').innerHTML = "";
+            document.getElementById('Password').innerHTML = "";
+        } else {
+            alert("An unexpected error occurred. Please try again");
+        }
     })
 }
 
@@ -49,7 +53,6 @@ async function onSignIn(e) {
         mode: 'cors',
         method: 'POST',
         // To get the cookie from backend
-        credentials: "include",
         headers: {
             'Content-Type': 'application/json',
         },
@@ -61,13 +64,17 @@ async function onSignIn(e) {
     fetch(apiLink + '/login', reqOptions)
     .then((response) => response.json() )
     .then((data)=> {
-        if (data.message === "Success") {
+        if (data.id !== -1) {
+            // Storing JWT Token in cookies
+            document.cookie = "jwt=" + data.token;
+            document.cookie = "user_id=" + data.id;
+            // Redirecting to main page after successful login with JWT Token in cookies.
             alert("Logged In Successfully!!");
             document.getElementById('Email_Signin').innerHTML = "";
             document.getElementById('Password_Signin').innerHTML = "";
             window.location.href = "http://127.0.0.1:5500/JWT_Authentication/web-app/main-page.html";
         } else {
-            alert(data.message);
+            alert("An unexpected error occurred. Please try again");
         }
     });   
 }

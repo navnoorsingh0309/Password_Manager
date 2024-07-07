@@ -150,25 +150,25 @@ func (s *PostgresStore) CreateUser(user *models.User, mongoClient *MongoDBClient
 	return nil
 }
 
-func (s *PostgresStore) Loginuser(login *models.LoginUserReq) (string, error) {
+func (s *PostgresStore) Loginuser(login *models.LoginUserReq) (int, string, error) {
 	// Get user by email from database
 	user, err := s.GetUserByEmail(login.Email)
 	if err != nil {
-		return "", err
+		return -1, "", err
 	}
 
 	// Comparing Hashed Passwords
 	if err := bcrypt.CompareHashAndPassword(user.EncryptedPassword, []byte(login.Password)); err != nil {
-		return "", err
+		return -1, "", err
 	}
 
 	// Generating Token
 	token, err := CreateJWT(user)
 	if err != nil {
-		return "", err
+		return -1, "", err
 	}
 
-	return token, nil
+	return user.Id, token, nil
 }
 
 func (s *PostgresStore) GetUserByEmail(email string) (*models.User, error) {

@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Authentication
 type CreateUserReq struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -15,20 +16,18 @@ type LoginUserReq struct {
 	Password string `json:"password"`
 }
 
+type LoginResponse struct {
+	Error string `json:"error"`
+	Token string `json:"token"`
+	Id    int    `json:"id"`
+}
+
 type User struct {
 	Id                int       `json:"id"`
 	Name              string    `json:"name"`
 	Email             string    `json:"email`
 	EncryptedPassword []byte    `json:"encryptedPassword"`
 	CreatedAt         time.Time `json:"createat"`
-}
-
-type APIError struct {
-	Error string `json:"error"`
-}
-
-type JWTToken struct {
-	Token string `json:"token"`
 }
 
 type Message struct {

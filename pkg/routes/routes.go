@@ -15,13 +15,27 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func WriteJson(w http.ResponseWriter, data any) {
+	// Writing json
+	w.Header().Add("Content-Type", "application/json")
+	// For CORS policy
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.WriteHeader(http.StatusOK)
+	jsonRespose, err := json.Marshal(data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(jsonRespose)
+}
+
 var RegisterUserRotues = func(r *mux.Router, store database.PostgresStore, client database.MongoDBClient) {
 	controllers.SetStore(store)
 	controllers.SetMongoClient(client)
 	// Login
 	r.HandleFunc("/login", controllers.HandleLogin).Methods("POST", "OPTIONS")
 	// New User
-	r.HandleFunc("/signup", controllers.HandleSignUp).Methods("POST")
+	r.HandleFunc("/signup", controllers.HandleSignUp).Methods("POST", "OPTIONS")
 	// Getting Password
 	r.HandleFunc("/getpasses", ProtectedWithJWT(controllers.HandleGetPasswords)).Methods("GET")
 	// Adding New Password
@@ -32,37 +46,25 @@ var RegisterUserRotues = func(r *mux.Router, store database.PostgresStore, clien
 	r.HandleFunc("/deletepass", ProtectedWithJWT(controllers.HandleDeletePassword)).Methods("DELETE")
 
 	// Temp Route
-	r.HandleFunc("/getusers", controllers.HandleGetUsers).Methods("GET")
+	r.HandleFunc("/getusers", controllers.HandleGetUsers).Methods("GET", "OPTIONS")
 }
 
 // Protected Routes
 // Creating middleware
 func ProtectedWithJWT(handleFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Calling middleware")
-
 		tokenString := r.Header.Get("x-jwt-token")
 		token, err := ValidateJWTToken(tokenString)
 		if err != nil {
 			// Writing json
-			w.Header().Add("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			jsonRes, err := json.Marshal(models.APIError{Error: "Permission Denied"})
-			if err != nil {
-				log.Fatal(err)
-			}
-			w.Write(jsonRes)
+			WriteJson(w, models.Message{Message: "Permission Denied"})
+			return
 		}
 		// Valid token or not
 		if !token.Valid {
 			// Writing json
-			w.Header().Add("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			jsonRes, err := json.Marshal(models.APIError{Error: "Permission Denied"})
-			if err != nil {
-				log.Fatal(err)
-			}
-			w.Write(jsonRes)
+			WriteJson(w, models.Message{Message: "Permission Denied"})
+			return
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
