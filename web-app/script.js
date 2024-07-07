@@ -17,7 +17,8 @@ signInLink.addEventListener('click', () => {
     wrapper.classList.remove('signup-clicking');
 });
 
-function onSignUp() {
+function onSignUp(e) {
+    e.preventDefault();
     // Creating NON-CORES request to my api
     const reqOptions = {
         mode: 'no-cors',
@@ -41,7 +42,8 @@ function onSignUp() {
     })
 }
 
-function onSignIn() {
+function onSignIn(e) {
+    e.preventDefault();
     // Creating NON-CORES request to my api
     const reqOptions = {
         mode: 'no-cors',
@@ -55,10 +57,5 @@ function onSignIn() {
         })
     }
     fetch(apiLink + '/login', reqOptions)
-    .then(response => response.json())
-    .then((data)=> {
-        alert("SignIn Successful");
-        document.getElementById('Email_Signin').innerHTML = "";
-        document.getElementById('Password_Signin').innerHTML = "";
-    })
+    .then(response => alert(response.json()));
 }

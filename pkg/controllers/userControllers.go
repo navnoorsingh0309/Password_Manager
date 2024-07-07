@@ -18,6 +18,8 @@ var client database.MongoDBClient
 func WriteJson(w http.ResponseWriter, data any) {
 	// Writing json
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.WriteHeader(http.StatusOK)
 	jsonRespose, err := json.Marshal(data)
 	if err != nil {
@@ -39,13 +41,13 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 	// Get login information
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		WriteJson(w, models.APIError{Error: "Permission Denied"})
+		WriteJson(w, models.Message{Message: "Permission Denied"})
 	}
 
 	// Login to database
 	jwt_token, err := store.Loginuser(&req)
 	if err != nil {
-		WriteJson(w, models.APIError{Error: err.Error()})
+		WriteJson(w, models.Message{Message: "Permission Denied"})
 	}
 
 	// Will store token in cookie
@@ -88,7 +90,7 @@ func HandleSignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Writing json
-	WriteJson(w, user)
+	WriteJson(w, models.Message{Message: "success"})
 }
 
 func HandleNewPassword(w http.ResponseWriter, r *http.Request) {

@@ -29,6 +29,7 @@ type UserMethods interface {
 
 // Methods for particular user
 type ParticularMethods interface {
+	GetPasswords() ([]models.PasswordModel, error)
 	NewPassword(*models.PasswordModel) error
 	DeletePassword(int) error
 	UpdatePassword(*models.PasswordModel) error
@@ -170,6 +171,7 @@ func (s *PostgresStore) Loginuser(login *models.LoginUserReq) (string, error) {
 }
 
 func (s *PostgresStore) GetUserByEmail(email string) (*models.User, error) {
+	// Query to get user by email from database
 	rows, err := s.db.Query("SELECT * FROM USERS WHERE email = $1", email)
 	if err != nil {
 		return nil, err
