@@ -14,6 +14,7 @@ import (
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -53,7 +54,7 @@ func CreateJWT(user *models.User) (string, error) {
 	// Claims
 	claims := &jwt.MapClaims{
 		"expiresAt": time.Now().Add(time.Minute * 30).Unix(), // 30 Minutes as it contains passwords
-		"Email":     user.Email,
+		"Id":        user.Id,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -85,7 +86,7 @@ func NewPostgresStore() (*PostgresStore, error) {
 
 // Initializing MongoDB
 func NewMongoDB() (*MongoDBClient, error) {
-	clientOptions := options.Client().ApplyURI("mongodb://mongoadmin:go_jwt@localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10")
+	clientOptions := options.Client().ApplyURI("mongodb://mymongo:go_jwt@localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10")
 	//clientOptions := options.Client().ApplyURI("mongodb://mongoadmin:go_jwt@mymongo:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
@@ -182,7 +183,7 @@ func (s *PostgresStore) GetUserByEmail(email string) (*models.User, error) {
 		return ScanIntoUsers(rows)
 	}
 
-	return nil, errors.New("User not found")
+	return nil, errors.New("user not found")
 }
 
 // Scanning into users
@@ -213,7 +214,25 @@ func (client *MongoDBClient) NewCollection(user *models.User, name string) error
 }
 
 // Mongo DB Database methods
-func (client *MongoDBClient) NewPassword(passModel *models.PasswordModel) error {
+func (client *MongoDBClient) GetPasswords(id int) ([]models.PasswordModel, error) {
+	var passwords []models.PasswordModel
+	// Going to collection
+	cursor, err := client.db.Collection("user"+strconv.Itoa(id)).Find(context.TODO(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	// Getting all documents
+	if err := cursor.All(context.TODO(), &passwords); err != nil {
+		return nil, err
+	}
+	return passwords, nil
+}
+
+func (client *MongoDBClient) NewPassword(id int, passModel *models.PasswordModel) error {
+	_, err := client.db.Collection("user"+strconv.Itoa(id)).InsertOne(context.TODO(), passModel)
+	if err != nil {
+		return nil
+	}
 	return nil
 }
 

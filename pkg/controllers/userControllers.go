@@ -6,7 +6,9 @@ import (
 	"jwt-app/pkg/models"
 	"log"
 	"net/http"
+	"os"
 
+	jwt "github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -28,11 +30,29 @@ func WriteJson(w http.ResponseWriter, data any) {
 	w.Write(jsonRespose)
 }
 
+// Some parameters
 func SetStore(s database.PostgresStore) {
 	store = s
 }
 func SetMongoClient(c database.MongoDBClient) {
 	client = c
+}
+func DecodeJWTToken(myToken string) (int, error) {
+	var tokenClaim models.JWTTokenClaims
+
+	token, err := jwt.ParseWithClaims(myToken, &tokenClaim, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("JWT_SECRET")), nil
+	})
+	if err != nil {
+		return -1, err
+	}
+
+	// Checking token validity
+	if !token.Valid {
+		return -1, err
+	}
+
+	return tokenClaim.Id, nil
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -112,11 +132,46 @@ func HandleSignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleNewPassword(w http.ResponseWriter, r *http.Request) {
+	var getRequest models.PasswordModel
+	// Decoding Id
+	id, err := DecodeJWTToken(r.Header.Get("x-jwt-token"))
+	if err != nil {
+		WriteJson(w, models.Message{Message: "Error"})
+		return
+	}
 
+	// Decoding body
+	if err := json.NewDecoder(r.Body).Decode(&getRequest); err != nil {
+		WriteJson(w, models.Message{Message: "Error"})
+		return
+	}
+
+	// Creating new password for the user
+	if err := client.NewPassword(id, &models.PasswordModel{
+		Password: getRequest.Password,
+		Entity:   getRequest.Entity,
+	}); err != nil {
+		WriteJson(w, models.Message{Message: "Error"})
+		return
+	}
+	WriteJson(w, models.Message{Message: "Success"})
 }
 
 func HandleGetPasswords(w http.ResponseWriter, r *http.Request) {
+	// Decoding Id
+	id, err := DecodeJWTToken(r.Header.Get("x-jwt-token"))
+	if err != nil {
+		WriteJson(w, models.Message{Message: "Error"})
+		return
+	}
 
+	// Getting all passwords wrt to Id
+	passwords, err := client.GetPasswords(id)
+	if err != nil {
+		WriteJson(w, models.Message{Message: "Error"})
+		return
+	}
+	WriteJson(w, passwords)
 }
 
 func HandleEditPassword(w http.ResponseWriter, r *http.Request) {
