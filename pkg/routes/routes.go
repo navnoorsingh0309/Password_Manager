@@ -19,7 +19,7 @@ var RegisterUserRotues = func(r *mux.Router, store database.PostgresStore, clien
 	controllers.SetStore(store)
 	controllers.SetMongoClient(client)
 	// Login
-	r.HandleFunc("/login", controllers.HandleLogin).Methods("POST")
+	r.HandleFunc("/login", controllers.HandleLogin).Methods("POST", "OPTIONS")
 	// New User
 	r.HandleFunc("/signup", controllers.HandleSignUp).Methods("POST")
 	// Getting Password

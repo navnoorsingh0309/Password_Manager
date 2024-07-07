@@ -18,8 +18,10 @@ var client database.MongoDBClient
 func WriteJson(w http.ResponseWriter, data any) {
 	// Writing json
 	w.Header().Add("Content-Type", "application/json")
-	w.Header().Add("Access-Control-Allow-Origin", "*")
+	// For CORS policy
 	w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Origin", "http://127.0.0.1:5500")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 	w.WriteHeader(http.StatusOK)
 	jsonRespose, err := json.Marshal(data)
 	if err != nil {
@@ -58,12 +60,13 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		Value:    jwt_token,
 		MaxAge:   int(time.Now().Add(time.Minute * 30).Unix()),
 		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+		Secure:   false,
 	}
 	// Setting Cookie
 	http.SetCookie(w, &cookie)
 
 	WriteJson(w, models.Message{Message: "Success"})
-
 }
 
 func HandleSignUp(w http.ResponseWriter, r *http.Request) {

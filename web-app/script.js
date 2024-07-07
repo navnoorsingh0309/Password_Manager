@@ -4,12 +4,12 @@ const signInLink = document.querySelector('.signIn-link');
 const signInForm = document.querySelector('.sign-in');
 const signUpForm = document.querySelector('.sign-up');
 
-const apiLink = "https://critical-tobe-student-iitropar-6d8618df.koyeb.app"
+// const apiLink = "https://critical-tobe-student-iitropar-6d8618df.koyeb.app"
+const apiLink = "http://localhost:8000"
 
 signUpLink.addEventListener('click', () => {
     wrapper.classList.add('signup-clicking');
     wrapper.classList.remove('signin-clicking');
-    console.log(getCoo)
 });
 
 signInLink.addEventListener('click', () => {
@@ -19,9 +19,9 @@ signInLink.addEventListener('click', () => {
 
 function onSignUp(e) {
     e.preventDefault();
-    // Creating NON-CORES request to my api
+    // Creating CORE request to my api
     const reqOptions = {
-        mode: 'no-cors',
+        mode: 'cors',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -42,20 +42,32 @@ function onSignUp(e) {
     })
 }
 
-function onSignIn(e) {
+async function onSignIn(e) {
     e.preventDefault();
-    // Creating NON-CORES request to my api
+    // Creating CORS request to my api
     const reqOptions = {
-        mode: 'no-cors',
+        mode: 'cors',
         method: 'POST',
+        // To get the cookie from backend
+        credentials: "include",
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            email: document.getElementById('Email_Signin').value,
-            password: document.getElementById('Password_Signin').value,
+            "email": document.getElementById('Email_Signin').value,
+            "password": document.getElementById('Password_Signin').value,
         })
     }
     fetch(apiLink + '/login', reqOptions)
-    .then(response => alert(response.json()));
+    .then((response) => response.json() )
+    .then((data)=> {
+        if (data.message === "Success") {
+            alert("Logged In Successfully!!");
+            document.getElementById('Email_Signin').innerHTML = "";
+            document.getElementById('Password_Signin').innerHTML = "";
+            window.location.href = "http://127.0.0.1:5500/JWT_Authentication/web-app/main-page.html";
+        } else {
+            alert(data.message);
+        }
+    });   
 }
