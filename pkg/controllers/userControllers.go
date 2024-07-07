@@ -21,7 +21,7 @@ func WriteJson(w http.ResponseWriter, data any) {
 	w.Header().Add("Content-Type", "application/json")
 	// For CORS policy
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, x-jwt-token")
 	w.WriteHeader(http.StatusOK)
 	jsonRespose, err := json.Marshal(data)
 	if err != nil {

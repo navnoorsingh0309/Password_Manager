@@ -20,7 +20,7 @@ func WriteJson(w http.ResponseWriter, data any) {
 	w.Header().Add("Content-Type", "application/json")
 	// For CORS policy
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, , x-jwt-token")
 	w.WriteHeader(http.StatusOK)
 	jsonRespose, err := json.Marshal(data)
 	if err != nil {
@@ -32,18 +32,19 @@ func WriteJson(w http.ResponseWriter, data any) {
 var RegisterUserRotues = func(r *mux.Router, store database.PostgresStore, client database.MongoDBClient) {
 	controllers.SetStore(store)
 	controllers.SetMongoClient(client)
+	// Adding OPTIONS is necessary for CORS request
 	// Login
 	r.HandleFunc("/login", controllers.HandleLogin).Methods("POST", "OPTIONS")
 	// New User
 	r.HandleFunc("/signup", controllers.HandleSignUp).Methods("POST", "OPTIONS")
 	// Getting Password
-	r.HandleFunc("/getpasses", ProtectedWithJWT(controllers.HandleGetPasswords)).Methods("GET")
+	r.HandleFunc("/getpasses", ProtectedWithJWT(controllers.HandleGetPasswords)).Methods("GET", "OPTIONS")
 	// Adding New Password
-	r.HandleFunc("/newpass", ProtectedWithJWT(controllers.HandleNewPassword)).Methods("POST")
+	r.HandleFunc("/newpass", ProtectedWithJWT(controllers.HandleNewPassword)).Methods("POST", "OPTIONS")
 	// Editing Password
-	r.HandleFunc("/editpass", ProtectedWithJWT(controllers.HandleEditPassword)).Methods("PUT")
+	r.HandleFunc("/editpass", ProtectedWithJWT(controllers.HandleEditPassword)).Methods("PUT", "OPTIONS")
 	// Deleteing Password
-	r.HandleFunc("/deletepass", ProtectedWithJWT(controllers.HandleDeletePassword)).Methods("DELETE")
+	r.HandleFunc("/deletepass", ProtectedWithJWT(controllers.HandleDeletePassword)).Methods("DELETE", "OPTIONS")
 
 	// Temp Route
 	r.HandleFunc("/getusers", controllers.HandleGetUsers).Methods("GET", "OPTIONS")
