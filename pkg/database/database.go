@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"jwt-app/pkg/models"
 	"os"
@@ -64,8 +65,8 @@ func CreateJWT(user *models.User) (string, error) {
 // Initializing Postgres Storage
 func NewPostgresStore() (*PostgresStore, error) {
 	// Open Postgres service
-	//connStr := "postgres://postgres:go_jwt@localhost:5432/postgres?sslmode=disable"
-	connStr := "postgres://postgres:go_jwt@mypostgres:5432/postgres?sslmode=disable"
+	connStr := "postgres://postgres:go_jwt@localhost:5432/postgres?sslmode=disable"
+	//connStr := "postgres://postgres:go_jwt@mypostgres:5432/postgres?sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
@@ -84,8 +85,8 @@ func NewPostgresStore() (*PostgresStore, error) {
 
 // Initializing MongoDB
 func NewMongoDB() (*MongoDBClient, error) {
-	//clientOptions := options.Client().ApplyURI("mongodb://mongoadmin:go_jwt@localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10")
-	clientOptions := options.Client().ApplyURI("mongodb://mongoadmin:go_jwt@mymongo:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10")
+	clientOptions := options.Client().ApplyURI("mongodb://mongoadmin:go_jwt@localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10")
+	//clientOptions := options.Client().ApplyURI("mongodb://mongoadmin:go_jwt@mymongo:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		return nil, err
@@ -181,7 +182,7 @@ func (s *PostgresStore) GetUserByEmail(email string) (*models.User, error) {
 		return ScanIntoUsers(rows)
 	}
 
-	return nil, fmt.Errorf("user not found")
+	return nil, errors.New("User not found")
 }
 
 // Scanning into users
