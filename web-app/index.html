@@ -33,7 +33,7 @@
             <input
               class="Creds_input"
               id="Password"
-              type="test"
+              type="password"
               placeholder="Password"
               required
             />
@@ -49,17 +49,23 @@
       </div>
 
       <div class="form-wrapper sign-in">
-        <form action="">
+        <form onsubmit="onSignIn()">
           <h2>Login</h2>
           <div class="firstInput">
             <input
               class="Creds_input"
               type="email"
+              id="Email_Signin"
               placeholder="Your Email Address"
             />
           </div>
           <div class="restInputs">
-            <input class="Creds_input" type="text" placeholder="Password" />
+            <input
+              class="Creds_input"
+              type="password"
+              placeholder="Password"
+              id="Password_Signin"
+            />
           </div>
           <div class="forgot-pass">
             <a href="#" style="text-decoration: none; color: black"

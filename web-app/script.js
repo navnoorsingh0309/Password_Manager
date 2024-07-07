@@ -17,7 +17,6 @@ signInLink.addEventListener('click', () => {
 });
 
 function onSignUp() {
-    alert("SignUping");
     const reqOptions = {
         mode: 'no-cors',
         method: 'POST',
@@ -33,7 +32,30 @@ function onSignUp() {
     fetch(apiLink + '/signup', reqOptions)
     .then(response => response.json())
     .then((data)=> {
-        console.log(data);
-        alert("SignUp Successful");
+        alert("Account Created Successfully!!");
+        document.getElementById('Name').innerHTML = "";
+        document.getElementById('Email').innerHTML = "";
+        document.getElementById('Password').innerHTML = "";
+    })
+}
+
+function onSignIn() {
+    const reqOptions = {
+        mode: 'no-cors',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: document.getElementById('Email_Signin').value,
+            password: document.getElementById('Password_Signin').value,
+        })
+    }
+    fetch(apiLink + '/login', reqOptions)
+    .then(response => response.json())
+    .then((data)=> {
+        alert("SignIn Successful");
+        document.getElementById('Email_Signin').innerHTML = "";
+        document.getElementById('Password_Signin').innerHTML = "";
     })
 }
