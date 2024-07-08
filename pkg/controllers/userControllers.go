@@ -148,8 +148,9 @@ func HandleNewPassword(w http.ResponseWriter, r *http.Request) {
 
 	// Creating new password for the user
 	if err := client.NewPassword(id, &models.PasswordModel{
-		Password: getRequest.Password,
 		Entity:   getRequest.Entity,
+		Email:    getRequest.Email,
+		Password: getRequest.Password,
 	}); err != nil {
 		WriteJson(w, models.Message{Message: "Error"})
 		return

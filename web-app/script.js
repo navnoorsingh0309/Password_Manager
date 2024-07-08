@@ -27,7 +27,7 @@ function onSignUp(e) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            "name": document.getElementById('Name_Signup').value,
+            "name": document.getElementById('Name').value,
             "email": document.getElementById('Email').value,
             "password": document.getElementById('Password').value,
         })
@@ -37,16 +37,19 @@ function onSignUp(e) {
     .then((data)=> {
         if (data.message !== "Error") {
             alert("Account Created Successfully!!");
-            document.getElementById('Name').innerHTML = "";
-            document.getElementById('Email').innerHTML = "";
-            document.getElementById('Password').innerHTML = "";
+            document.getElementById('Name').value = "";
+            document.getElementById('Email').value = "";
+            document.getElementById('Password').value = "";
         } else {
+            document.getElementById('Name').value = "";
+            document.getElementById('Email').value = "";
+            document.getElementById('Password').value = "";
             alert("An unexpected error occurred. Please try again");
         }
     })
 }
 
-async function onSignIn(e) {
+function onSignIn(e) {
     e.preventDefault();
     // Creating CORS request to my api
     const reqOptions = {
@@ -66,15 +69,17 @@ async function onSignIn(e) {
     .then((data)=> {
         if (data.id !== -1) {
             // Storing JWT Token in cookies
-            document.cookie = "jwt=" + data.token;
-            document.cookie = "user_id=" + data.id;
+            document.cookie = "_PM_RPR_TK_AC_=" + data.token + "; Path=/;";
+            document.cookie = "_UR_SH_ID_=" + data.id + "; Path=/;"
             // Redirecting to main page after successful login with JWT Token in cookies.
             alert("Logged In Successfully!!");
-            document.getElementById('Email_Signin').innerHTML = "";
-            document.getElementById('Password_Signin').innerHTML = "";
+            document.getElementById('Email_Signin').value = "";
+            document.getElementById('Password_Signin').value = "";
             window.location.href = "http://127.0.0.1:5500/JWT_Authentication/web-app/main-page.html";
         } else {
-            alert("An unexpected error occurred. Please try again");
+            document.getElementById('Email_Signin').value = "";
+            document.getElementById('Password_Signin').value = "";
+            alert("Permission Denied");
         }
     });   
 }

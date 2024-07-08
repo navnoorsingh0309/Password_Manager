@@ -202,22 +202,11 @@ func ScanIntoUsers(rows *sql.Rows) (*models.User, error) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Mongo DB New Collection for new signUp
-func (client *MongoDBClient) NewCollection(user *models.User, name string) error {
-	// Creating new collection with given user id
-	if err := client.db.CreateCollection(context.TODO(), string(user.Id)); err != nil {
-		return err
-	}
-	// Getting collection for user id
-	client.collection = client.db.Collection(string(user.Id))
-	return nil
-}
-
 // Mongo DB Database methods
 func (client *MongoDBClient) GetPasswords(id int) ([]models.PasswordModel, error) {
 	var passwords []models.PasswordModel
 	// Going to collection
-	cursor, err := client.db.Collection("user"+strconv.Itoa(id)).Find(context.TODO(), bson.D{})
+	cursor, err := client.db.Collection("user_"+strconv.Itoa(id)).Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +218,7 @@ func (client *MongoDBClient) GetPasswords(id int) ([]models.PasswordModel, error
 }
 
 func (client *MongoDBClient) NewPassword(id int, passModel *models.PasswordModel) error {
-	_, err := client.db.Collection("user"+strconv.Itoa(id)).InsertOne(context.TODO(), passModel)
+	_, err := client.db.Collection("user_"+strconv.Itoa(id)).InsertOne(context.TODO(), passModel)
 	if err != nil {
 		return nil
 	}

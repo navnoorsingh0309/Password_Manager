@@ -1,6 +1,8 @@
 * {
   box-sizing: border-box;
   font: 300 1.125rem/1.5 system-ui;
+  padding: 0;
+  margin: 0;
 }
 
 body {
@@ -9,7 +11,11 @@ body {
   flex-direction: column;
   min-height: 100vh;
   background: linear-gradient(#1e2022, #52616b);
-  padding: 10px;
+  margin: 0;
+  overflow-x: hidden;
+  @media (width < 400px) {
+    overflow-x: scroll;
+  }
 }
 
 caption {
@@ -18,7 +24,7 @@ caption {
 }
 
 table {
-  min-width: 300px !important;
+  min-width: 400px !important;
   width: 60vw !important;
   max-width: 60vw !important;
   border-collapse: collapse;
@@ -27,13 +33,13 @@ table {
   filter: drop-shadow(0 1px 1px #c1c1c1);
   margin-inline: auto;
   @media (width <= 1000px) {
-    width: 80vw !important;
-    max-width: 80vw !important;
+    width: 90vw !important;
+    max-width: 90vw !important;
   }
 }
 
 thead {
-  min-width: 300px !important;
+  min-width: 400px !important;
   background: black;
   color: white;
   border-radius: 1rem;
@@ -87,8 +93,8 @@ tr:hover {
 }
 
 td {
-  width: 30vw !important;
-  min-width: 30vw !important;
+  width: 20vw !important;
+  min-width: 20vw !important;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 2rem 0.5rem;
@@ -98,14 +104,111 @@ td {
   font-weight: 700;
   @media (width <= 1000px) {
     min-width: 150px !important;
-    width: 40vw !important;
-    max-width: 40vw !important;
+    width: 30vw !important;
+    max-width: 30vw !important;
   }
 }
 
 #user_id {
-    font-size: 30px;
-    font-weight:900;
-    color: #e5e5e5;
-    padding: 5px;
+  font-size: 20px;
+  font-weight:900;
+  color: #e5e5e5;
+  padding: 5px;
+}
+
+.head_div {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0;
+  width: 100vw;
+  height: 50px;
+  background-color: #1e2022;
+  margin-bottom: 50px;
+}
+
+.signout {
+  color: #000000;
+  font-size: 20px;
+  font-weight: 900;
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+.new_pass {
+  color: #000000;
+  font-size: 20px;
+  font-weight: 900;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.strong_text{
+  font-size: 30px;
+  font-weight: 800;
+}
+
+#dialog {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #e5e5e5;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  border-radius: 10px;
+  @media (width <= 400px) {
+    width: 90vw;
+  }
+}
+
+#dialogOverlay {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+input {
+  width: 90%;
+}
+
+.firstInput {
+  margin-top: 20px;
+  width: 100%;
+}
+.restInputs {
+  width: 100%;
+  margin-top: 10px;
+}
+.Pass_input {
+  font-weight: 500;
+  border: 1px black solid;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 15px;
+  padding: 5px;
+  padding-left: 10px;
+}
+#modalButtonsDiv {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+.modalBtns {
+  font-weight: 500;
+  padding-left: 10px;
+  padding-right: 10px;
 }

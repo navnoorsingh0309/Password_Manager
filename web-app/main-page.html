@@ -1,27 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Password Manager</title>
     <link rel="stylesheet" href="Main-Page/styles.css" />
-</head>
-<body>
-    <h1 id="user_id">User id: </h1>
-
+  </head>
+  <body>
+    <div id="dialogOverlay" onclick="closeNewPassModal()"></div>
+    <div id="dialog">
+      <h1 class="strong_text">Add a new Password</h1>
+      <form onsubmit="addNewPassword(event)">
+        <div class="firstInput">
+          <input
+            class="Pass_input"
+            type="text"
+            id="Entity"
+            placeholder="Entity Password belong"
+            required
+          />
+        </div>
+        <div class="restInputs">
+          <input
+            class="Pass_input"
+            id="Email"
+            type="Email"
+            placeholder="Your Email"
+            required
+          />
+        </div>
+        <div class="restInputs">
+          <input
+            class="Pass_input"
+            id="Password"
+            type="password"
+            placeholder="Your Password"
+            required
+          />
+        </div>
+      <div id="modalButtonsDiv">
+        <button class="modalBtns" id="addPassDialogBtn" type="submit">Add</button>
+        <button class="modalBtns" id="closeDialogBtn" type="button" onclick="closeNewPassModal()">Close</button>
+      </div>
+    </form>
+    </div>
+    <div class="head_div">
+      <h1 id="user_id">User id:</h1>
+      <!-- Signout button -->
+      <button class="signout" onclick="signOut()">Sign Out</button>
+    </div>
     <!-- Table -->
+    <button class="new_pass" onclick="newPassword()">New Password</button>
     <table>
-        <thead>
-          <tr>
-            <th>Entity</th>
-            <th>Password</th>
-          </tr>
-        </thead>
-        <tbody id="Table_Body">
-          <!-- Table rows will be dynamically populated here -->
-        </tbody>
-      </table>
+      <thead>
+        <tr>
+          <th>Entity</th>
+          <th>Email</th>
+          <th>Password</th>
+        </tr>
+      </thead>
+      <tbody id="Table_Body">
+        <!-- Table rows will be dynamically populated here -->
+      </tbody>
+    </table>
 
     <script src="Main-Page/script.js"></script>
-</body>
+  </body>
 </html>

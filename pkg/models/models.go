@@ -36,6 +36,7 @@ type Message struct {
 
 type PasswordModel struct {
 	Entity   string `json:"entity"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
